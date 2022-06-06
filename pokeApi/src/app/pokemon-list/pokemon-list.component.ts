@@ -10,18 +10,26 @@ export class PokemonListComponent implements OnInit {
 
   pokemons: any[] = [];
 
+  page = 1;
+
+  totalPokemons: number;
+
   constructor(private dataService: DataService) {}
 
   ngOnInit(): void {
+   this.getPokemons();
+  }
+
+  getPokemons(){
     this.dataService.getPokemons()
-      .subscribe((response:  any)=>{
-        response.results.forEach(result =>{
-          this.dataService.getMoreData(result.name)
-            .subscribe((data: any)=>{
-              this.pokemons.push(data);
-              console.log(this.pokemons)
-            })
-        })
+    .subscribe((response:  any)=>{
+      this.totalPokemons = response.count
+      response.results.forEach(result =>{
+        this.dataService.getMoreData(result.name)
+          .subscribe((data: any)=>{
+            this.pokemons.push(data);
+          })
       })
+    })
   }
 }
